@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 import 'package:flutter_chat_app/servises/database.dart';
@@ -222,6 +224,7 @@ class _ChatterPageState extends State<ChatterPage> {
                               color: Colors.white54.withOpacity(0.5)),
                         ),
                       )),
+                      SizedBox(width:  8,),
                       GestureDetector(
                         onTap: () {
                           addMessage(true);

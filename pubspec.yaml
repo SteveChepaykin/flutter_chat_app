@@ -29,6 +29,7 @@ dependencies:
   shared_preferences:
   random_string:
   cloud_firestore:
+  firebase_messaging:
   
   cupertino_icons: ^1.0.2
   flutter_local_notifications: ^8.1.1+1

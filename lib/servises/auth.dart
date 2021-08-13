@@ -15,7 +15,7 @@ class AuthMethods{
     return auth.currentUser;
   }
 
-  signInWithGoogle(BuildContext context) async {
+  signInWithGoogle(BuildContext context, String username) async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -34,7 +34,7 @@ class AuthMethods{
       if (userDetails.photoURL is String) SharedPreferenceHelper().saveProfileKey(userDetails.photoURL!);
       SharedPreferenceHelper().saveUsername(userDetails.email!.replaceAll("@gmail.com", ""));
 
-      Map<String, dynamic> userInfoMap = {"email": userDetails.email, "username": userDetails.email!.replaceAll("@gmail.com", ""), "name": userDetails.displayName, "imgUrl": userDetails.photoURL};
+      Map<String, dynamic> userInfoMap = {"email": userDetails.email, "username": userDetails.email!.replaceAll("@gmail.com", ""), "name": username, "imgUrl": userDetails.photoURL};
 
       DatabaseMethods().addUserInfoToDB(userDetails.uid, userInfoMap).then((value){Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));});
     }
