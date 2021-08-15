@@ -11,6 +11,7 @@ import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 import './searchuserslist.dart';
 // import './chatroomlist.dart';
 import './chatslist.dart';
+import './profilepage.dart';
 import 'package:flutter_chat_app/servises/pushnotifications.dart';
 
 class HomePage extends StatefulWidget {
@@ -80,18 +81,30 @@ class _HomePageState extends State<HomePage> {
           //     ),
           //   ),
           // ),
+          // InkWell(
+          //   onTap: () {
+          //     AuthMethods().signOut().then((s) {
+          //       Navigator.pushReplacement(
+          //           context, MaterialPageRoute(builder: (context) => SignIn()));
+          //     });
+          //   },
+          //   child: Container(
+          //     child: Icon(Icons.exit_to_app),
+          //     //color: Colors.grey[850],
+          //     padding: EdgeInsets.symmetric(
+          //       horizontal: 16,
+          //     ),
+          //   ),
+          // ),
           InkWell(
             onTap: () {
-              AuthMethods().signOut().then((s) {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => SignIn()));
-              });
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(myName.toString(), myUsername.toString(), myProfilePic.toString(), myEmail.toString())));
             },
             child: Container(
-              child: Icon(Icons.exit_to_app),
-              //color: Colors.grey[850],
               padding: EdgeInsets.symmetric(
-                horizontal: 16,
+                horizontal: 16,),
+              child: Icon(Icons.person,
+              //color: Colors.grey[850],
               ),
             ),
           ),
