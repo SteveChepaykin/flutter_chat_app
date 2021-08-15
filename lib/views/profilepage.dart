@@ -11,7 +11,8 @@ import 'package:random_string/random_string.dart';
 
 class ProfilePage extends StatefulWidget {
   final String myName, myUsername, myProfilepic, myEmail;
-  ProfilePage(this.myName, this.myUsername, this.myProfilepic, this.myEmail);
+  bool isMine;
+  ProfilePage(this.myName, this.myUsername, this.myProfilepic, this.myEmail, this.isMine);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -23,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
         actions: [
-          InkWell(
+          widget.isMine ? InkWell(
             onTap: () {
               AuthMethods().signOut().then((s) {
                 Navigator.pushReplacement(
@@ -42,10 +43,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-          ),
+          ) : Container(),
         ],
         title: Text(
-          "Your profile",
+          widget.isMine ? "Your profile" : "User profile",
           style: TextStyle(color: Colors.white, fontSize: 24),
         ),
         backgroundColor: Colors.blue.shade800,

@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 import 'package:flutter_chat_app/servises/database.dart';
+import 'package:flutter_chat_app/views/profilepage.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:random_string/random_string.dart';
 //import './homepage.dart';
@@ -19,7 +20,7 @@ class _ChatterPageState extends State<ChatterPage> {
   late String chatRoomId, messageId = "";
   late Stream<QuerySnapshot<Object?>> messageStream;
   late String? myName, myProfilePic, myEmail, myUsername;
-  late String profilePicUrl = "";
+  late String username = "", name = "", email = "", profilePicUrl = "";
   late String currentTime;
   TextEditingController controller = TextEditingController();
 
@@ -39,8 +40,11 @@ class _ChatterPageState extends State<ChatterPage> {
       return "$a\_$b";
   }
 
-  void getUserProfilePic(String username) async {
+  void getUserProfile(String username) async {
     QuerySnapshot querySnapshot = await DatabaseMethods().getUserInfo(username);
+    email = "${querySnapshot.docs[0]["email"]}";
+    username = "${querySnapshot.docs[0]["username"]}";
+    name = "${querySnapshot.docs[0]["name"]}";
     profilePicUrl = "${querySnapshot.docs[0]["imgUrl"]}";
     setState(() {});
   }
@@ -156,7 +160,7 @@ class _ChatterPageState extends State<ChatterPage> {
   doThisonLaunch() async {
     await getMyInfoFromSharedprefs();
     getAndSetMessages();
-    getUserProfilePic(widget.chatWirhUsername);
+    getUserProfile(widget.chatWirhUsername);
   }
 
   @override
@@ -174,14 +178,19 @@ class _ChatterPageState extends State<ChatterPage> {
         title: Row(
           children: [
             profilePicUrl != ""
-                ? ClipRRect(
-                    child: Image.network(
-                      profilePicUrl,
-                      height: 40,
-                      width: 40,
+                ? GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(name, username, profilePicUrl, email, false)));
+                  },
+                  child: ClipRRect(
+                      child: Image.network(
+                        profilePicUrl,
+                        height: 40,
+                        width: 40,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                  )
+                )
                 : Container(
                     width: 40,
                     height: 40,

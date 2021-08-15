@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           // ),
           InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(myName.toString(), myUsername.toString(), myProfilePic.toString(), myEmail.toString())));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(myName.toString(), myUsername.toString(), myProfilePic.toString(), myEmail.toString(), true)));
             },
             child: Container(
               padding: EdgeInsets.symmetric(
