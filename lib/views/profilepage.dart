@@ -8,11 +8,13 @@ import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 import 'package:flutter_chat_app/servises/database.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:random_string/random_string.dart';
+import './settings.dart';
 
 class ProfilePage extends StatefulWidget {
   final String myName, myUsername, myProfilepic, myEmail;
   bool isMine;
-  ProfilePage(this.myName, this.myUsername, this.myProfilepic, this.myEmail, this.isMine);
+  ProfilePage(this.myName, this.myUsername, this.myProfilepic, this.myEmail,
+      this.isMine);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -24,26 +26,31 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
         actions: [
-          widget.isMine ? InkWell(
-            onTap: () {
-              AuthMethods().signOut().then((s) {
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => SignIn()));
-              });
-            },
-            child: Row(
-              children: [
-                Text("quit", style: TextStyle(fontSize: 20),),
-                Container(
-                  child: Icon(Icons.exit_to_app),
-                  //color: Colors.grey[850],
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16,
+          widget.isMine
+              ? InkWell(
+                  onTap: () {
+                    AuthMethods().signOut().then((s) {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => SignIn()));
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        "quit",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Container(
+                        child: Icon(Icons.exit_to_app),
+                        //color: Colors.grey[850],
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ) : Container(),
+                )
+              : Container(),
         ],
         title: Text(
           widget.isMine ? "Your profile" : "User profile",
@@ -87,6 +94,24 @@ class _ProfilePageState extends State<ProfilePage> {
               Text(
                 "email: " + widget.myEmail,
                 style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              SizedBox(
+                height: 24,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                },
+                child: Container(
+                  width: 160,
+                  height: 40,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.blue[800],),
+                  child: Text(
+                    "settings",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                  ),
+                ),
               ),
             ],
           ),

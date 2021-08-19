@@ -62,8 +62,14 @@ class _HomePageState extends State<HomePage> {
     Scaffold(
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
-        title: Text("Milky"),
-        backgroundColor: Colors.blue[800],
+        title: Row(
+          children: [
+            ClipRRect(child: Image.asset("assets/Free_Sample_By_Wix-_1_.png", height: 64, width: 64)),
+            SizedBox(width: 4,),
+            Text("Milky"),
+          ],
+        ),
+        backgroundColor: Color.fromRGBO(69, 182, 237, 1),
         actions: [
           // InkWell(
           //   onTap: () {
