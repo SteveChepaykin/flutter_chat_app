@@ -7,7 +7,7 @@ import 'package:flutter_chat_app/servises/database.dart';
 import 'package:flutter_chat_app/views/profilepage.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:random_string/random_string.dart';
-//import './homepage.dart';
+import './homepage.dart';
 
 class ChatterPage extends StatefulWidget {
   final String chatWirhUsername, name;

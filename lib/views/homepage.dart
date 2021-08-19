@@ -49,10 +49,6 @@ class _HomePageState extends State<HomePage> {
     await getChatRooms();
   }
 
-  void setStateOnQuit(){
-    setState(() {});
-  }
-
   @override
   void initState() {
     // onScreenLoaded().then((value) => setState(() {}));
@@ -75,21 +71,6 @@ class _HomePageState extends State<HomePage> {
           //   },
           //   child: Container(
           //     child: Icon(Icons.download),
-          //     //color: Colors.grey[850],
-          //     padding: EdgeInsets.symmetric(
-          //       horizontal: 16,
-          //     ),
-          //   ),
-          // ),
-          // InkWell(
-          //   onTap: () {
-          //     AuthMethods().signOut().then((s) {
-          //       Navigator.pushReplacement(
-          //           context, MaterialPageRoute(builder: (context) => SignIn()));
-          //     });
-          //   },
-          //   child: Container(
-          //     child: Icon(Icons.exit_to_app),
           //     //color: Colors.grey[850],
           //     padding: EdgeInsets.symmetric(
           //       horizontal: 16,
