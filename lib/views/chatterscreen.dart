@@ -22,6 +22,7 @@ class _ChatterPageState extends State<ChatterPage> {
   late String? myName, myProfilePic, myEmail, myUsername;
   late String username = "", name = "", email = "", profilePicUrl = "";
   late String currentTime;
+  late bool isInstantMessaging;
   TextEditingController controller = TextEditingController();
 
   getMyInfoFromSharedprefs() async {
@@ -47,6 +48,16 @@ class _ChatterPageState extends State<ChatterPage> {
     name = "${querySnapshot.docs[0]["name"]}";
     profilePicUrl = "${querySnapshot.docs[0]["imgUrl"]}";
     setState(() {});
+  }
+
+  void getInstantMessageBool() async
+  {
+    isInstantMessaging = await SharedPreferenceHelper().getInstantMessages() as bool;
+    setState(() {});
+  }
+
+  void funkForNothing(){
+
   }
 
   addMessage(bool sendclicked) {
@@ -160,6 +171,7 @@ class _ChatterPageState extends State<ChatterPage> {
   doThisonLaunch() async {
     await getMyInfoFromSharedprefs();
     getAndSetMessages();
+    getInstantMessageBool();
     getUserProfile(widget.chatWirhUsername);
   }
 
@@ -223,6 +235,9 @@ class _ChatterPageState extends State<ChatterPage> {
                     children: [
                       Expanded(
                           child: TextField(
+                            // onChanged: (value) {
+                            //   isInstantMessaging ? addMessage(false) : funkForNothing();
+                            // },
                         controller: controller,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(

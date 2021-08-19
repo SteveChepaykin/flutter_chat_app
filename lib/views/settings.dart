@@ -21,6 +21,17 @@ class _SettingsPageState extends State<SettingsPage> {
   bool blackTheme = true;
   bool showMessagesInstant = false;
 
+  void initState() {
+    getSwitchValues();
+    super.initState();
+  }
+
+  void getSwitchValues() async {
+    blackTheme = await SharedPreferenceHelper().getDarkMode() as bool;
+    showMessagesInstant = await SharedPreferenceHelper().getInstantMessages() as bool;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     onChanged: (value) {
                       setState(() {
                         blackTheme = value;
+                        SharedPreferenceHelper().saveDarkMode(blackTheme);
                       });
                     },
                     activeColor: Colors.blue[800],
@@ -72,6 +84,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     onChanged: (value) {
                       setState(() {
                         showMessagesInstant = value;
+                        SharedPreferenceHelper().saveInstantMessages(value);
                       });
                     },
                     activeColor: Colors.blue[800],

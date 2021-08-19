@@ -7,6 +7,8 @@ class SharedPreferenceHelper{
   static String displayNameKey = "DISPLAYNAMEKEY";
   static String userMailKey = "USERMAILKEY";
   static String userProfileKey = "USERPROFILEKEY";
+  static String darkModeKey = "DARKMODEKEY";
+  static String enableInstantMessages = "INSTANTMESSAGEKEY";
 
   Future<bool> saveUsername(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,6 +30,14 @@ class SharedPreferenceHelper{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setString(userProfileKey, profilekey);
   }
+  Future<bool> saveDarkMode(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(darkModeKey, value);
+  }
+  Future<bool> saveInstantMessages(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setBool(enableInstantMessages, value);
+  }
 
   Future<String?> getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -48,5 +58,15 @@ class SharedPreferenceHelper{
   Future<String?> getProfileKey() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(userProfileKey);
+  }
+  Future<bool?> getDarkMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? res = prefs.getBool(darkModeKey);
+    return res;
+  }
+  Future<bool?> getInstantMessages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? res = prefs.getBool(enableInstantMessages);
+    return res;
   }
 }

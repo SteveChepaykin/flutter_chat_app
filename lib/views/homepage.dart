@@ -64,12 +64,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Row(
           children: [
-            ClipRRect(child: Image.asset("assets/Free_Sample_By_Wix-_1_.png", height: 64, width: 64)),
+            ClipRRect(child: Image.asset("assets/Free_Sample_By_Wix-_2_.png", height: 64, width: 64)),
             SizedBox(width: 4,),
             Text("Milky"),
           ],
         ),
-        backgroundColor: Color.fromRGBO(69, 182, 237, 1),
+        backgroundColor: Colors.blue[800],
         actions: [
           // InkWell(
           //   onTap: () {

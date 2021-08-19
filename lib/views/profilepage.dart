@@ -98,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(
                 height: 24,
               ),
-              GestureDetector(
+              widget.isMine ? GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
                 },
@@ -112,7 +112,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: TextStyle(fontSize: 24, color: Colors.white),
                   ),
                 ),
-              ),
+              ) : Container(),
             ],
           ),
         ),
