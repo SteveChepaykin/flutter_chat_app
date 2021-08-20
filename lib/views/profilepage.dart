@@ -25,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
+        //leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {Navigator.pop(context);}),
         actions: [
           widget.isMine
               ? InkWell(
