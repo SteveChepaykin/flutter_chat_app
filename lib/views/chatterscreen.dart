@@ -23,6 +23,10 @@ class _ChatterPageState extends State<ChatterPage> {
   late String username = "", name = "", email = "", profilePicUrl = "";
   late String currentTime;
   late bool isInstantMessaging;
+  String messageTitle = "Empty";
+  String notificationAlert = "alert";
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController controller = TextEditingController();
 
   getMyInfoFromSharedprefs() async {
@@ -179,6 +183,22 @@ class _ChatterPageState extends State<ChatterPage> {
   void initState() {
     doThisonLaunch();
     super.initState();
+    _firebaseMessaging.configure(
+      onMessage: (message) async{
+        setState(() {
+          messageTitle = message["notification"]["title"];
+          notificationAlert = "New Notification Alert";
+        });
+
+      },
+      onResume: (message) async{
+        setState(() {
+          messageTitle = message["data"]["title"];
+          notificationAlert = "Application opened from Notification";
+        });
+
+      },
+    );
   }
 
   @override
