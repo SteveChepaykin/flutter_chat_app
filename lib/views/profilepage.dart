@@ -1,20 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/servises/auth.dart';
 import 'package:flutter_chat_app/views/signin.dart';
-import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
-import 'package:flutter_chat_app/servises/database.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
-import 'package:random_string/random_string.dart';
 import './settings.dart';
 
 class ProfilePage extends StatefulWidget {
   final String myName, myUsername, myProfilepic, myEmail;
   bool isMine;
-  ProfilePage(this.myName, this.myUsername, this.myProfilepic, this.myEmail,
-      this.isMine);
+  ProfilePage(this.myName, this.myUsername, this.myProfilepic, this.myEmail, this.isMine);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -30,8 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ? InkWell(
                   onTap: () {
                     AuthMethods().signOut().then((s) {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => SignIn()));
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignIn()));
                     });
                   },
                   child: Row(
@@ -76,10 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Text(
                 widget.myName,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 30),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 30),
               ),
               SizedBox(
                 height: 40,
@@ -98,21 +87,26 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(
                 height: 24,
               ),
-              widget.isMine ? GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
-                },
-                child: Container(
-                  width: 160,
-                  height: 40,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.blue[800],),
-                  child: Text(
-                    "settings",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                  ),
-                ),
-              ) : Container(),
+              widget.isMine
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+                      },
+                      child: Container(
+                        width: 160,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.blue[800],
+                        ),
+                        child: Text(
+                          "settings",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 24, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

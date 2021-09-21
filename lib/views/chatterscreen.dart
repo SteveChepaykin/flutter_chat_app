@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_chat_app/servises/database.dart';
 import 'package:flutter_chat_app/views/profilepage.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:random_string/random_string.dart';
-import './homepage.dart';
 
 class ChatterPage extends StatefulWidget {
   final String chatWirhUsername, name;
@@ -26,7 +24,7 @@ class _ChatterPageState extends State<ChatterPage> {
   String messageTitle = "Empty";
   String notificationAlert = "alert";
 
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  // FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController controller = TextEditingController();
 
   getMyInfoFromSharedprefs() async {
@@ -168,22 +166,20 @@ class _ChatterPageState extends State<ChatterPage> {
   void initState() {
     doThisonLaunch();
     super.initState();
-    _firebaseMessaging.configure(
-      onMessage: (message) async{
-        setState(() {
-          messageTitle = message["notification"]["title"];
-          notificationAlert = "New Notification Alert";
-        });
-
-      },
-      onResume: (message) async{
-        setState(() {
-          messageTitle = message["data"]["title"];
-          notificationAlert = "Application opened from Notification";
-        });
-
-      },
-    );
+    // _firebaseMessaging.configure(
+    //   onMessage: (message) async {
+    //     setState(() {
+    //       messageTitle = message["notification"]["title"];
+    //       notificationAlert = "New Notification Alert";
+    //     });
+    //   },
+    //   onResume: (message) async {
+    //     setState(() {
+    //       messageTitle = message["data"]["title"];
+    //       notificationAlert = "Application opened from Notification";
+    //     });
+    //   },
+    // );
   }
 
   @override

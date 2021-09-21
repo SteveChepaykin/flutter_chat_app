@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 import 'package:flutter_chat_app/servises/auth.dart';
 import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:flutter_chat_app/views/signin.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_chat_app/views/myTheme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
