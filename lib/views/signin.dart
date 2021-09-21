@@ -25,18 +25,19 @@ class _SignInState extends State<SignIn> {
         children: [
           Container(
             decoration: BoxDecoration(
-                border: Border.all(width: 2.0, color: Colors.blue.shade800,), borderRadius: BorderRadius.circular(12)),
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                padding: EdgeInsets.only(left: 12),
+                border: Border.all(
+                  width: 2.0,
+                  color: Colors.blue.shade800,
+                ),
+                borderRadius: BorderRadius.circular(12)),
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            padding: EdgeInsets.only(left: 12),
             child: Expanded(
               child: TextField(
                 style: TextStyle(color: Colors.white, fontSize: 20),
                 controller: editingController,
                 decoration: InputDecoration(
-                  border: InputBorder.none,
-                    hintText: "enter your username",
-                    hintStyle:
-                        TextStyle(color: Colors.white54, fontSize: 16)),
+                    border: InputBorder.none, hintText: "enter your username", hintStyle: TextStyle(color: Colors.white54, fontSize: 16)),
               ),
             ),
           ),
@@ -47,9 +48,7 @@ class _SignInState extends State<SignIn> {
               }
             },
             child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.blue[800]),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.blue[800]),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
                 "sign in with Google",
