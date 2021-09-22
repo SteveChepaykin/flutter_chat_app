@@ -1,16 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
-import 'package:flutter_chat_app/servises/auth.dart';
-import 'package:flutter_chat_app/servises/database.dart';
 // import 'package:flutter_chat_app/views/chatterscreen.dart';
-import 'package:flutter_chat_app/views/signin.dart';
 import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 
-import './searchuserslist.dart';
 // import './chatroomlist.dart';
-import './chatslist.dart';
-import './profilepage.dart';
-import 'package:flutter_chat_app/servises/pushnotifications.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -49,10 +41,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Text(
                     "black theme",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   Switch(
                     value: blackTheme,
@@ -74,10 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Text(
                     "show messages instantly",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   Switch(
                     value: showMessagesInstant,

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_chat_app/servises/database.dart';
 import 'package:flutter_chat_app/views/profilepage.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:random_string/random_string.dart';
-import './homepage.dart';
 
 class ChatterPage extends StatefulWidget {
   final String chatWirhUsername, name;
@@ -18,7 +16,7 @@ class ChatterPage extends StatefulWidget {
 
 class _ChatterPageState extends State<ChatterPage> {
   late String chatRoomId, messageId = "";
-  late Stream<QuerySnapshot<Object?>> messageStream;
+  late Stream<QuerySnapshot<Object?>> messageStream = Stream<QuerySnapshot<Object?>>.empty();
   late String? myName, myProfilePic, myEmail, myUsername;
   late String username = "", name = "", email = "", profilePicUrl = "";
   late String currentTime;
@@ -26,7 +24,7 @@ class _ChatterPageState extends State<ChatterPage> {
   String messageTitle = "Empty";
   String notificationAlert = "alert";
 
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  // FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController controller = TextEditingController();
 
   getMyInfoFromSharedprefs() async {
@@ -54,15 +52,12 @@ class _ChatterPageState extends State<ChatterPage> {
     setState(() {});
   }
 
-  void getInstantMessageBool() async
-  {
-    isInstantMessaging = await SharedPreferenceHelper().getInstantMessages() as bool;
+  void getInstantMessageBool() async {
+    isInstantMessaging = (await SharedPreferenceHelper().getInstantMessages())!;
     setState(() {});
   }
 
-  void funkForNothing(){
-
-  }
+  void funkForNothing() {}
 
   addMessage(bool sendclicked) {
     if (controller.text != "") {
@@ -79,9 +74,7 @@ class _ChatterPageState extends State<ChatterPage> {
         messageId = randomAlphaNumeric(12);
       }
 
-      DatabaseMethods()
-          .addMessage(chatRoomId, messageId, messageinfoMap)
-          .then((value) {
+      DatabaseMethods().addMessage(chatRoomId, messageId, messageinfoMap).then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "message": message,
           "lastMessageSendTS": lastMessageTime,
@@ -104,16 +97,13 @@ class _ChatterPageState extends State<ChatterPage> {
         Container(
           child: Container(
             //color: Colors.blue[800],
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft:
-                        sendByMe ? Radius.circular(20) : Radius.circular(0),
+                    topLeft: sendByMe ? Radius.circular(20) : Radius.circular(0),
                     bottomRight: Radius.circular(20),
                     bottomLeft: Radius.circular(20),
-                    topRight:
-                        sendByMe ? Radius.circular(0) : Radius.circular(20)),
+                    topRight: sendByMe ? Radius.circular(0) : Radius.circular(20)),
                 color: sendByMe ? Colors.blue[900] : Colors.white54),
             margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             padding: EdgeInsets.all(12),
@@ -130,17 +120,14 @@ class _ChatterPageState extends State<ChatterPage> {
                 SizedBox(height: 2),
                 Text(
                   timeSent,
-                  style: TextStyle(
-                      color: sendByMe ? Colors.white : Colors.black,
-                      fontSize: 12),
+                  style: TextStyle(color: sendByMe ? Colors.white : Colors.black, fontSize: 12),
                 ),
               ],
             ),
           ),
         ),
       ],
-      mainAxisAlignment:
-          sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
     );
   }
 
@@ -157,11 +144,7 @@ class _ChatterPageState extends State<ChatterPage> {
                     DocumentSnapshot ds = snapshot.data!.docs[index];
                     Timestamp dd = ds["ts"] as Timestamp;
                     return chatMessageTile(
-                        ds["message"],
-                        myUsername == ds["sendBy"],
-                        dd.toDate().hour.toString() +
-                            ":" +
-                            dd.toDate().minute.toString());
+                        ds["message"], myUsername == ds["sendBy"], dd.toDate().hour.toString() + ":" + dd.toDate().minute.toString());
                   })
               : Center(child: CircularProgressIndicator());
         });
@@ -183,22 +166,20 @@ class _ChatterPageState extends State<ChatterPage> {
   void initState() {
     doThisonLaunch();
     super.initState();
-    _firebaseMessaging.configure(
-      onMessage: (message) async{
-        setState(() {
-          messageTitle = message["notification"]["title"];
-          notificationAlert = "New Notification Alert";
-        });
-
-      },
-      onResume: (message) async{
-        setState(() {
-          messageTitle = message["data"]["title"];
-          notificationAlert = "Application opened from Notification";
-        });
-
-      },
-    );
+    // _firebaseMessaging.configure(
+    //   onMessage: (message) async {
+    //     setState(() {
+    //       messageTitle = message["notification"]["title"];
+    //       notificationAlert = "New Notification Alert";
+    //     });
+    //   },
+    //   onResume: (message) async {
+    //     setState(() {
+    //       messageTitle = message["data"]["title"];
+    //       notificationAlert = "Application opened from Notification";
+    //     });
+    //   },
+    // );
   }
 
   @override
@@ -211,10 +192,11 @@ class _ChatterPageState extends State<ChatterPage> {
           children: [
             profilePicUrl != ""
                 ? GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(name, username, profilePicUrl, email, false)));
-                  },
-                  child: ClipRRect(
+                    onTap: () {
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => ProfilePage(name, username, profilePicUrl, email, false)));
+                    },
+                    child: ClipRRect(
                       child: Image.network(
                         profilePicUrl,
                         height: 40,
@@ -222,7 +204,7 @@ class _ChatterPageState extends State<ChatterPage> {
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                )
+                  )
                 : Container(
                     width: 40,
                     height: 40,
@@ -255,20 +237,20 @@ class _ChatterPageState extends State<ChatterPage> {
                     children: [
                       Expanded(
                           child: TextField(
-                            // onChanged: (value) {
-                            //   isInstantMessaging ? addMessage(false) : funkForNothing();
-                            // },
+                        // onChanged: (value) {
+                        //   isInstantMessaging ? addMessage(false) : funkForNothing();
+                        // },
                         controller: controller,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: "enter message...",
                           border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white54.withOpacity(0.5)),
+                          hintStyle: TextStyle(fontWeight: FontWeight.w400, color: Colors.white54.withOpacity(0.5)),
                         ),
                       )),
-                      SizedBox(width:  8,),
+                      SizedBox(
+                        width: 8,
+                      ),
                       GestureDetector(
                         onTap: () {
                           addMessage(true);
