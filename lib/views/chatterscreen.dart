@@ -358,12 +358,15 @@ class _ChatterPageState extends State<ChatterPage> {
                     replyMessage != ""
                         ? Row(
                             children: [
-                              Text(
-                                "reply: $replyMessage",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.white60),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              Container(
+                                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
+                                child: Text(
+                                  "reply: $replyMessage",
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white60),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                               Expanded(
                                 child: InkWell(
