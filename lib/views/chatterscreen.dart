@@ -112,7 +112,7 @@ class _ChatterPageState extends State<ChatterPage> {
     return GestureDetector(
       onLongPressUp: () {
         setState(() {
-          midReplyMessage = message;  
+          midReplyMessage = message;
         });
       },
       child: Row(
@@ -140,16 +140,22 @@ class _ChatterPageState extends State<ChatterPage> {
                       ? Container(
                           margin: EdgeInsets.only(bottom: 4),
                           padding: EdgeInsets.all(6),
-                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: sendByMe ? Colors.indigo[800] : Colors.white60),
-                          //color: sendByMe ? Colors.blue[700] : Colors.white60,
+                          constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.8),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: sendByMe
+                                  ? Colors.indigo[800]
+                                  : Colors.white54),
                           child: Text(
                             "replying:  " + replyMessage,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             style: TextStyle(
                                 fontSize: 14,
-                                color: sendByMe ? Colors.white70 : Colors.black87),
+                                color:
+                                    sendByMe ? Colors.white70 : Colors.black87),
                           ),
                           // child: RichText(text: TextSpan(
                           //   style: DefaultTextStyle.of(context).style,
@@ -158,7 +164,9 @@ class _ChatterPageState extends State<ChatterPage> {
 
                           // )),
                         )
-                      : Container(width: 0,),
+                      : Container(
+                          width: 0,
+                        ),
                   Text(
                     message,
                     style: TextStyle(
@@ -288,8 +296,8 @@ class _ChatterPageState extends State<ChatterPage> {
             Text(widget.name),
             midReplyMessage != ""
                 ? Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         // SizedBox(
                         //   width: ,
@@ -319,7 +327,7 @@ class _ChatterPageState extends State<ChatterPage> {
                         )
                       ],
                     ),
-                )
+                  )
                 : Container(),
           ],
         ),
@@ -348,11 +356,34 @@ class _ChatterPageState extends State<ChatterPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     replyMessage != ""
-                        ? Text(
-                            "reply: $replyMessage",
-                            style: TextStyle(fontSize: 14, color: Colors.white60),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                        ? Row(
+                            children: [
+                              Text(
+                                "reply: $replyMessage",
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.white60),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      replyMessage = "";
+                                    });
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Icon(
+                                      Icons.close_outlined,
+                                      color: Colors.white70,
+                                    ),
+                                    padding:
+                                        EdgeInsets.only(left: 12, right: 8),
+                                  ),
+                                ),
+                              )
+                            ],
                           )
                         : Container(),
                     Row(

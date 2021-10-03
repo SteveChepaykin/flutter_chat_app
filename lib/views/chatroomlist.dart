@@ -117,7 +117,7 @@ class _ChatRoomListState extends State<ChatRoomList> {
                         child: Container(
                           constraints: BoxConstraints(
                               maxWidth:
-                                  MediaQuery.of(context).size.width * 0.62),
+                                  MediaQuery.of(context).size.width * 0.5),
                           child: Text(
                             "> " + widget.lastMessageSent,
                             style: TextStyle(color: Colors.white, fontSize: 20),
