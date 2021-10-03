@@ -144,7 +144,7 @@ class _ChatterPageState extends State<ChatterPage> {
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: sendByMe ? Colors.indigo[800] : Colors.white60),
                           //color: sendByMe ? Colors.blue[700] : Colors.white60,
                           child: Text(
-                            "replying: " + replyMessage,
+                            "replying:  " + replyMessage,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
                             style: TextStyle(
