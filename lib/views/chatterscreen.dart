@@ -16,13 +16,21 @@ class ChatterPage extends StatefulWidget {
 
 class _ChatterPageState extends State<ChatterPage> {
   late String chatRoomId, messageId = "";
-  late Stream<QuerySnapshot<Object?>> messageStream = Stream<QuerySnapshot<Object?>>.empty();
+  late Stream<QuerySnapshot<Object?>> messageStream =
+      Stream<QuerySnapshot<Object?>>.empty();
   late String? myName, myProfilePic, myEmail, myUsername;
-  late String username = "", name = "", email = "", profilePicUrl = "";
+  late String username = "",
+      name = "",
+      email = "",
+      profilePicUrl = "",
+      token = "";
   late String currentTime;
   late bool isInstantMessaging;
   String messageTitle = "Empty";
   String notificationAlert = "alert";
+  //bool answering = false;
+  String midReplyMessage = "";
+  String replyMessage = "";
 
   // FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController controller = TextEditingController();
@@ -46,9 +54,10 @@ class _ChatterPageState extends State<ChatterPage> {
   void getUserProfile(String username) async {
     QuerySnapshot querySnapshot = await DatabaseMethods().getUserInfo(username);
     email = "${querySnapshot.docs[0]["email"]}";
-    username = "${querySnapshot.docs[0]["username"]}";
+    this.username = "${querySnapshot.docs[0]["username"]}";
     name = "${querySnapshot.docs[0]["name"]}";
     profilePicUrl = "${querySnapshot.docs[0]["imgUrl"]}";
+    token = "${querySnapshot.docs[0]["token"]}";
     setState(() {});
   }
 
@@ -68,66 +77,110 @@ class _ChatterPageState extends State<ChatterPage> {
         "sendBy": myUsername,
         "ts": lastMessageTime,
         "imgUrl": myProfilePic,
+        "toToken": token,
+        "reply": replyMessage != "" ? replyMessage : ""
       };
 
       if (messageId == "") {
         messageId = randomAlphaNumeric(12);
       }
 
-      DatabaseMethods().addMessage(chatRoomId, messageId, messageinfoMap).then((value) {
+      DatabaseMethods()
+          .addMessage(chatRoomId, messageId, messageinfoMap)
+          .then((value) {
         Map<String, dynamic> lastMessageInfoMap = {
           "message": message,
           "lastMessageSendTS": lastMessageTime,
-          "lsatMessageSendBy": myUsername
+          "lsatMessageSendBy": myName
         };
 
         DatabaseMethods().updateLastMessageSent(chatRoomId, lastMessageInfoMap);
 
         if (sendclicked) {
-          controller.text = "";
-          messageId = "";
+          setState(() {
+            controller.text = "";
+            messageId = "";
+            replyMessage = "";
+          });
         }
       });
     }
   }
 
-  Widget chatMessageTile(String message, bool sendByMe, String timeSent) {
-    return Row(
-      children: [
-        Container(
-          child: Container(
-            //color: Colors.blue[800],
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: sendByMe ? Radius.circular(20) : Radius.circular(0),
-                    bottomRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(20),
-                    topRight: sendByMe ? Radius.circular(0) : Radius.circular(20)),
-                color: sendByMe ? Colors.blue[900] : Colors.white54),
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            padding: EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  message,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: sendByMe ? Colors.white : Colors.black,
+  Widget chatMessageTile(String message, bool sendByMe, String timeSent,
+      {String replyMessage = ""}) {
+    return GestureDetector(
+      onLongPressUp: () {
+        setState(() {
+          midReplyMessage = message;  
+        });
+      },
+      child: Row(
+        children: [
+          Container(
+            child: Container(
+              //color: Colors.blue[800],
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.85),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft:
+                          sendByMe ? Radius.circular(16) : Radius.circular(0),
+                      bottomRight: Radius.circular(16),
+                      bottomLeft: Radius.circular(16),
+                      topRight:
+                          sendByMe ? Radius.circular(0) : Radius.circular(16)),
+                  color: sendByMe ? Colors.blue[900] : Colors.white54),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              padding: EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  replyMessage != ""
+                      ? Container(
+                          margin: EdgeInsets.only(bottom: 4),
+                          padding: EdgeInsets.all(6),
+                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: sendByMe ? Colors.indigo[800] : Colors.white60),
+                          //color: sendByMe ? Colors.blue[700] : Colors.white60,
+                          child: Text(
+                            "replying: " + replyMessage,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: sendByMe ? Colors.white70 : Colors.black87),
+                          ),
+                          // child: RichText(text: TextSpan(
+                          //   style: DefaultTextStyle.of(context).style,
+                          //   children: [TextSpan(text: "replying: ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          //   TextSpan(text: replyMessage, style: TextStyle(fontSize: 12))],
+
+                          // )),
+                        )
+                      : Container(width: 0,),
+                  Text(
+                    message,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: sendByMe ? Colors.white : Colors.black,
+                    ),
                   ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  timeSent,
-                  style: TextStyle(color: sendByMe ? Colors.white : Colors.black, fontSize: 12),
-                ),
-              ],
+                  SizedBox(height: 2),
+                  Text(
+                    timeSent,
+                    style: TextStyle(
+                        color: sendByMe ? Colors.white : Colors.black,
+                        fontSize: 12),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-      mainAxisAlignment: sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        ],
+        mainAxisAlignment:
+            sendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      ),
     );
   }
 
@@ -137,14 +190,26 @@ class _ChatterPageState extends State<ChatterPage> {
         builder: (context, snapshot) {
           return snapshot.hasData
               ? ListView.builder(
-                  padding: EdgeInsets.only(bottom: 75, top: 12),
+                  padding: EdgeInsets.only(bottom: 90, top: 12),
                   reverse: true,
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot ds = snapshot.data!.docs[index];
+                    Map<String, dynamic> dsm =
+                        ds.data() as Map<String, dynamic>;
                     Timestamp dd = ds["ts"] as Timestamp;
                     return chatMessageTile(
-                        ds["message"], myUsername == ds["sendBy"], dd.toDate().hour.toString() + ":" + dd.toDate().minute.toString());
+                      ds["message"],
+                      myUsername == ds["sendBy"],
+                      dd.toDate().minute.toString().length > 1
+                          ? dd.toDate().hour.toString() +
+                              ":" +
+                              dd.toDate().minute.toString()
+                          : dd.toDate().hour.toString() +
+                              ":0" +
+                              dd.toDate().minute.toString(),
+                      replyMessage: dsm.containsKey("reply") ? ds["reply"] : "",
+                    );
                   })
               : Center(child: CircularProgressIndicator());
         });
@@ -194,7 +259,17 @@ class _ChatterPageState extends State<ChatterPage> {
                 ? GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => ProfilePage(name, username, profilePicUrl, email, false)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                            name,
+                            username,
+                            profilePicUrl,
+                            email,
+                            false,
+                          ),
+                        ),
+                      );
                     },
                     child: ClipRRect(
                       child: Image.network(
@@ -211,6 +286,41 @@ class _ChatterPageState extends State<ChatterPage> {
                   ),
             SizedBox(width: 8),
             Text(widget.name),
+            midReplyMessage != ""
+                ? Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // SizedBox(
+                        //   width: ,
+                        // ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              replyMessage = midReplyMessage;
+                              midReplyMessage = "";
+                            });
+                          },
+                          child: Container(
+                            child: Icon(Icons.call_missed_outgoing),
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              midReplyMessage = "";
+                            });
+                          },
+                          child: Container(
+                            child: Icon(Icons.close_outlined),
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                        )
+                      ],
+                    ),
+                )
+                : Container(),
           ],
         ),
         leading: IconButton(
@@ -225,44 +335,61 @@ class _ChatterPageState extends State<ChatterPage> {
           children: [
             chatMessages(),
             Container(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  margin: EdgeInsets.only(bottom: 8, left: 8, right: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Colors.blue[800]?.withOpacity(0.4),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: TextField(
-                        // onChanged: (value) {
-                        //   isInstantMessaging ? addMessage(false) : funkForNothing();
-                        // },
-                        controller: controller,
-                        style: TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: "enter message...",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(fontWeight: FontWeight.w400, color: Colors.white54.withOpacity(0.5)),
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                margin: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.blue[800]?.withOpacity(0.6),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    replyMessage != ""
+                        ? Text(
+                            "reply: $replyMessage",
+                            style: TextStyle(fontSize: 14, color: Colors.white60),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : Container(),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: TextField(
+                          // onChanged: (value) {
+                          //   isInstantMessaging ? addMessage(false) : funkForNothing();
+                          // },
+                          controller: controller,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: "enter message...",
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white54.withOpacity(0.5)),
+                          ),
+                        )),
+                        SizedBox(
+                          width: 20,
                         ),
-                      )),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          addMessage(true);
-                        },
-                        child: Icon(
-                          Icons.send,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  ),
-                )),
+                        GestureDetector(
+                          onTap: () {
+                            addMessage(true);
+                          },
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

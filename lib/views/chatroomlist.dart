@@ -7,8 +7,9 @@ import 'package:flutter_chat_app/views/chatterscreen.dart';
 // import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 
 class ChatRoomList extends StatefulWidget {
-  final String lastMessageSent, chatRoomId, myUsername;
-  ChatRoomList(this.lastMessageSent, this.chatRoomId, this.myUsername);
+  final String lastMessageSent, chatRoomId, myUsername, timeSent;
+  ChatRoomList(
+      this.lastMessageSent, this.chatRoomId, this.myUsername, this.timeSent);
   @override
   _ChatRoomListState createState() => _ChatRoomListState();
 }
@@ -50,6 +51,43 @@ class _ChatRoomListState extends State<ChatRoomList> {
                 border: Border.all(style: BorderStyle.none),
                 borderRadius: BorderRadius.circular(12),
               ),
+              // return profilePicUrl != ""
+              //     ? ListTile(
+              //         leading: ClipRRect(
+              //           borderRadius: BorderRadius.all(Radius.circular(12)),
+              //           child: Image.network(
+              //             profilePicUrl,
+              //             width: 70,
+              //             height: 70,
+              //           ),
+              //         ),
+              //         title: Text(
+              //           name,
+              //           style: TextStyle(
+              //               fontSize: 24,
+              //               color: Colors.white,
+              //               fontWeight: FontWeight.bold),
+              //         ),
+              //         subtitle: Text(
+              //           "> " + widget.lastMessageSent,
+              //           style: TextStyle(color: Colors.white, fontSize: 20),
+              //           overflow: TextOverflow.ellipsis,
+              //           maxLines: 2,
+              //         ),
+              //         trailing: Container(
+              //           alignment: Alignment.bottomRight,
+              //           child: Text(
+              //             widget.timeSent,
+              //             style: TextStyle(color: Colors.white, fontSize: 18),
+              //           ),
+              //         ),
+              //         onTap: () {
+              //           Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                   builder: (context) => ChatterPage(username, name)));
+              //         },
+              //       )
               child: Row(
                 children: [
                   ClipRRect(
@@ -67,14 +105,19 @@ class _ChatRoomListState extends State<ChatRoomList> {
                     children: [
                       Text(
                         name,
-                        style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 4,
                       ),
                       Container(
                         child: Container(
-                          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.65),
+                          constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.62),
                           child: Text(
                             "> " + widget.lastMessageSent,
                             style: TextStyle(color: Colors.white, fontSize: 20),
@@ -85,6 +128,19 @@ class _ChatRoomListState extends State<ChatRoomList> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 55,
+                      alignment: Alignment.bottomRight,
+                      child: Text(
+                        widget.timeSent,
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

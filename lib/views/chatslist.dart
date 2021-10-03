@@ -18,8 +18,9 @@ class ChatsList extends StatelessWidget {
             ? ListView.builder(
                 itemBuilder: (context, index) {
                   DocumentSnapshot ds = snapshot.data!.docs[index];
+                  Timestamp ts = ds["lastMessageSendTS"] as Timestamp;
                   return ChatRoomList(
-                      ds["message"], ds.id, myUsername.toString());
+                      ds["message"], ds.id, myUsername.toString(), ts.toDate().minute.toString().length > 1 ? ts.toDate().hour.toString() + ":" + ts.toDate().minute.toString() : ts.toDate().hour.toString() + ":0" + ts.toDate().minute.toString());
                 },
                 shrinkWrap: true,
                 itemCount: snapshot.data!.docs.length)

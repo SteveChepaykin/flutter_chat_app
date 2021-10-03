@@ -126,6 +126,7 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: Container(
                           margin: EdgeInsets.only(top: 16, bottom: 30),
+                          padding: EdgeInsets.symmetric(horizontal: 16),
                           // padding: EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(12)),
