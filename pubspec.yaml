@@ -30,9 +30,15 @@ dependencies:
   random_string:
   cloud_firestore:
   firebase_messaging: "^10.0.7"
+  firebase_storage: "^10.0.5"
   
   cupertino_icons: ^1.0.2
   flutter_local_notifications: ^8.1.1+1
+  clipboard_manager: ^0.0.4
+  flutter_linkify: ^5.0.2
+  url_launcher: ^6.0.12
+  image_picker: ^0.8.4+2
+  image_cropper: ^1.4.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.1

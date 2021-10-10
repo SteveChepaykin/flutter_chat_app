@@ -1,9 +1,17 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/helperFunctions/sharedpref_helper.dart';
 import 'package:flutter_chat_app/servises/database.dart';
 import 'package:flutter_chat_app/views/profilepage.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+//import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 //import 'package:flutter_chat_app/views/homepage.dart';
 import 'package:random_string/random_string.dart';
 
@@ -31,6 +39,10 @@ class _ChatterPageState extends State<ChatterPage> {
   //bool answering = false;
   String midReplyMessage = "";
   String replyMessage = "";
+  String pictureUrl = "";
+  String replyPictureUrl = "";
+  late XFile? pictureFile;
+  late Uint8List? pictureAsBytes = null;
 
   // FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   TextEditingController controller = TextEditingController();
@@ -68,8 +80,22 @@ class _ChatterPageState extends State<ChatterPage> {
 
   void funkForNothing() {}
 
+  Future<void> pickImage(ImageSource source) async {
+    XFile? selected = await ImagePicker().pickImage(source: source);
+    if (selected != null) {
+      var data = await selected.readAsBytes();
+      await FirebaseStorage.instance.ref(selected.name).putData(data);
+      pictureUrl =
+          await FirebaseStorage.instance.ref(selected.name).getDownloadURL();
+      setState(() {
+        pictureFile = selected;
+        pictureAsBytes = data;
+      });
+    }
+  }
+
   addMessage(bool sendclicked) {
-    if (controller.text != "") {
+    if (controller.text != "" || pictureUrl != "") {
       String message = controller.text;
       var lastMessageTime = DateTime.now();
       Map<String, dynamic> messageinfoMap = {
@@ -78,7 +104,9 @@ class _ChatterPageState extends State<ChatterPage> {
         "ts": lastMessageTime,
         "imgUrl": myProfilePic,
         "toToken": token,
-        "reply": replyMessage != "" ? replyMessage : ""
+        "reply": replyMessage != "" ? replyMessage : "",
+        "pictureUrl": pictureUrl != "" ? pictureUrl : "",
+        "replyPicture": replyPictureUrl != "" ? replyPictureUrl : ""
       };
 
       if (messageId == "") {
@@ -101,6 +129,9 @@ class _ChatterPageState extends State<ChatterPage> {
             controller.text = "";
             messageId = "";
             replyMessage = "";
+            //replyPictureUrl = "";
+            pictureUrl = "";
+            pictureAsBytes = null;
           });
         }
       });
@@ -108,11 +139,14 @@ class _ChatterPageState extends State<ChatterPage> {
   }
 
   Widget chatMessageTile(String message, bool sendByMe, String timeSent,
-      {String replyMessage = ""}) {
+      {String replyMessage = "",
+      String pictureUrl = "",
+      }) {
     return GestureDetector(
       onLongPressUp: () {
         setState(() {
           midReplyMessage = message;
+          //replyPictureUrl = replyPictureurl;
         });
       },
       child: Row(
@@ -148,14 +182,33 @@ class _ChatterPageState extends State<ChatterPage> {
                               color: sendByMe
                                   ? Colors.indigo[800]
                                   : Colors.white54),
-                          child: Text(
-                            "replying:  " + replyMessage,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 14,
-                                color:
-                                    sendByMe ? Colors.white70 : Colors.black87),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              replyMessage != ""
+                                  ? Text(
+                                      replyMessage,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: sendByMe
+                                              ? Colors.white70
+                                              : Colors.black87),
+                                    )
+                                  : Container(
+                                      width: 0,
+                                    ),
+                              // replyPictureurl != ""
+                              //     ? Image.network(
+                              //         replyPictureurl,
+                              //         height: 60,
+                              //         width: 60,
+                              //       )
+                              //     : Container(
+                              //         width: 0,
+                              //       )
+                            ],
                           ),
                           // child: RichText(text: TextSpan(
                           //   style: DefaultTextStyle.of(context).style,
@@ -167,12 +220,40 @@ class _ChatterPageState extends State<ChatterPage> {
                       : Container(
                           width: 0,
                         ),
-                  Text(
-                    message,
+                  pictureUrl != ""
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            pictureUrl,
+
+                            // width: 200,
+                            // height: 200,
+                          ),
+                        )
+                      : Container(
+                          width: 0,
+                        ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  Linkify(
+                    onOpen: (link) async {
+                      if (await canLaunch(link.url)) {
+                        await launch(link.url);
+                      } else {
+                        throw 'Could not launch $link';
+                      }
+                    },
+                    text: message,
+                    //linkifiers: [UrlLinkifier()],
+                    options: LinkifyOptions(looseUrl: true, humanize: false),
                     style: TextStyle(
                       fontSize: 18,
                       color: sendByMe ? Colors.white : Colors.black,
                     ),
+                    linkStyle: TextStyle(
+                        color: sendByMe ? Colors.white : Colors.black,
+                        decoration: TextDecoration.underline),
                   ),
                   SizedBox(height: 2),
                   Text(
@@ -217,6 +298,9 @@ class _ChatterPageState extends State<ChatterPage> {
                               ":0" +
                               dd.toDate().minute.toString(),
                       replyMessage: dsm.containsKey("reply") ? ds["reply"] : "",
+                      pictureUrl:
+                          dsm.containsKey("pictureUrl") ? ds["pictureUrl"] : "",
+                      //replyPictureurl: dsm.containsKey("replyPictrure") ? ds["replyPicture"] : "",
                     );
                   })
               : Center(child: CircularProgressIndicator());
@@ -305,6 +389,19 @@ class _ChatterPageState extends State<ChatterPage> {
                         InkWell(
                           onTap: () {
                             setState(() {
+                              Clipboard.setData(
+                                  new ClipboardData(text: midReplyMessage));
+                              midReplyMessage = "";
+                            });
+                          },
+                          child: Container(
+                            child: Icon(Icons.copy_all_outlined),
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
                               replyMessage = midReplyMessage;
                               midReplyMessage = "";
                             });
@@ -355,37 +452,48 @@ class _ChatterPageState extends State<ChatterPage> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    replyMessage != ""
+                    replyMessage != "" || pictureAsBytes != null
                         ? Row(
                             children: [
-                              Container(
-                                constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
-                                child: Text(
-                                  "reply: $replyMessage",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white60),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
                               Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      replyMessage = "";
-                                    });
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.centerRight,
-                                    child: Icon(
-                                      Icons.close_outlined,
-                                      color: Colors.white70,
-                                    ),
-                                    padding:
-                                        EdgeInsets.only(left: 12, right: 8),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.85),
+                                  child: Text(
+                                    "reply: $replyMessage",
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.white60),
+                                    maxLines: pictureAsBytes != null ? 4 : 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                              )
+                              ),
+                              pictureAsBytes != null
+                                  ? Image.memory(pictureAsBytes!,
+                                      height: 100, width: 100)
+                                  : Container(
+                                      width: 0,
+                                    ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    replyMessage = "";
+                                    pictureAsBytes = null;
+                                    replyPictureUrl = "";
+                                  });
+                                },
+                                child: Container(
+                                  alignment: Alignment.topRight,
+                                  child: Icon(
+                                    Icons.close_outlined,
+                                    color: Colors.white70,
+                                  ),
+                                  padding: EdgeInsets.only(left: 12,),
+                                ),
+                              ),
+                              SizedBox(width: 12,)
                             ],
                           )
                         : Container(),
@@ -396,6 +504,9 @@ class _ChatterPageState extends State<ChatterPage> {
                           // onChanged: (value) {
                           //   isInstantMessaging ? addMessage(false) : funkForNothing();
                           // },
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 4,
+                          minLines: 1,
                           controller: controller,
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
@@ -417,7 +528,20 @@ class _ChatterPageState extends State<ChatterPage> {
                             Icons.send,
                             color: Colors.white,
                           ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            pickImage(ImageSource.gallery);
+                          },
+                          child: Icon(
+                            Icons.image_outlined,
+                            color: Colors.white,
+                          ),
                         )
+                        //IconButton(onPressed: () {}, icon: Icon(Icons.image_outlined))
                       ],
                     ),
                   ],
