@@ -11,28 +11,30 @@ class ChatsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: chatRoomsStream,
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? ListView.builder(
-                itemBuilder: (context, index) {
-                  DocumentSnapshot ds = snapshot.data!.docs[index];
-                  Timestamp ts = ds["lastMessageSendTS"] as Timestamp;
-                  return ChatRoomList(
-                      ds["message"], ds.id, myUsername.toString(), ts.toDate().minute.toString().length > 1 ? ts.toDate().hour.toString() + ":" + ts.toDate().minute.toString() : ts.toDate().hour.toString() + ":0" + ts.toDate().minute.toString(), key: UniqueKey(),);
-                },
-                shrinkWrap: true,
-                itemCount: snapshot.data!.docs.length)
-            : Center(
-                child: Text(
-                "No contacts yet!",
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 30,
-                ),
-              ));
-      },
+    return Expanded(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: chatRoomsStream,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot ds = snapshot.data!.docs[index];
+                    Timestamp ts = ds["lastMessageSendTS"] as Timestamp;
+                    return ChatRoomList(
+                        ds["message"], ds.id, myUsername.toString(), ts.toDate().minute.toString().length > 1 ? ts.toDate().hour.toString() + ":" + ts.toDate().minute.toString() : ts.toDate().hour.toString() + ":0" + ts.toDate().minute.toString(), key: UniqueKey(),);
+                  },
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.docs.length)
+              : Center(
+                  child: Text(
+                  "No contacts yet!",
+                  style: TextStyle(
+                    color: Colors.white54,
+                    fontSize: 30,
+                  ),
+                ));
+        },
+      ),
     );
   }
 }

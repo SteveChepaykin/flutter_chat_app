@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             body: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
+              margin: EdgeInsets.symmetric(horizontal: 8),
               child: Column(children: [
                 Row(
                   children: [

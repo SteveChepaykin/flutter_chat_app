@@ -155,18 +155,18 @@ class _ChatterPageState extends State<ChatterPage> {
             child: Container(
               //color: Colors.blue[800],
               constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.85),
+                  maxWidth: pictureUrl == "" ? MediaQuery.of(context).size.width * 0.85 : MediaQuery.of(context).size.width * 0.6),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft:
-                          sendByMe ? Radius.circular(16) : Radius.circular(0),
-                      bottomRight: Radius.circular(16),
-                      bottomLeft: Radius.circular(16),
+                          sendByMe ? Radius.circular(12) : Radius.circular(0),
+                      bottomRight: Radius.circular(12),
+                      bottomLeft: Radius.circular(12),
                       topRight:
-                          sendByMe ? Radius.circular(0) : Radius.circular(16)),
+                          sendByMe ? Radius.circular(0) : Radius.circular(12)),
                   color: sendByMe ? Colors.blue[900] : Colors.white54),
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(6),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -182,9 +182,7 @@ class _ChatterPageState extends State<ChatterPage> {
                               color: sendByMe
                                   ? Colors.indigo[800]
                                   : Colors.white54),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
+                          child: 
                               replyMessage != ""
                                   ? Text(
                                       replyMessage,
@@ -208,8 +206,7 @@ class _ChatterPageState extends State<ChatterPage> {
                               //     : Container(
                               //         width: 0,
                               //       )
-                            ],
-                          ),
+                            
                           // child: RichText(text: TextSpan(
                           //   style: DefaultTextStyle.of(context).style,
                           //   children: [TextSpan(text: "replying: ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -248,7 +245,7 @@ class _ChatterPageState extends State<ChatterPage> {
                     //linkifiers: [UrlLinkifier()],
                     options: LinkifyOptions(looseUrl: true, humanize: false),
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       color: sendByMe ? Colors.white : Colors.black,
                     ),
                     linkStyle: TextStyle(
@@ -377,7 +374,7 @@ class _ChatterPageState extends State<ChatterPage> {
                     height: 40,
                   ),
             SizedBox(width: 8),
-            Text(widget.name),
+            midReplyMessage == "" ? Text(widget.name) : Text(""),
             midReplyMessage != ""
                 ? Expanded(
                     child: Row(
@@ -498,6 +495,7 @@ class _ChatterPageState extends State<ChatterPage> {
                           )
                         : Container(),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Expanded(
                             child: TextField(
@@ -538,6 +536,18 @@ class _ChatterPageState extends State<ChatterPage> {
                           },
                           child: Icon(
                             Icons.image_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            pickImage(ImageSource.camera);
+                          },
+                          child: Icon(
+                            Icons.photo_camera,
                             color: Colors.white,
                           ),
                         )
